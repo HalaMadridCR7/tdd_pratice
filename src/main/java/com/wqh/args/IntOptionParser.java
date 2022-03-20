@@ -11,6 +11,11 @@ class IntOptionParser implements OptionParser {
     @Override
     public Object parse(List<String> arguments, Option option) {
         int i = arguments.indexOf("-" + option.value());
-        return Integer.valueOf(arguments.get(i + 1));
+        String value = arguments.get(i + 1);
+        return parseValue(value);
+    }
+
+    protected Object parseValue(String value) {
+        return Integer.valueOf(value);
     }
 }
