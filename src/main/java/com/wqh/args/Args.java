@@ -28,18 +28,59 @@ public class Args {
         Object value = null;
         Option option = parameter.getAnnotation(Option.class);
         if(parameter.getType() == Boolean.class) {
-            value = arguments.contains("-" + option.value());
+            value =  parseBoolean(arguments, option);
         }
 
         if(parameter.getType() == Integer.class) {
-            int i = arguments.indexOf("-" + option.value());
-            value = Integer.valueOf(arguments.get(i + 1));
+            value = parseInt(arguments, option);
         }
 
         if(parameter.getType() == String.class) {
-            int i = arguments.indexOf("-" + option.value());
-            value = arguments.get(i + 1);
+            value = parseString(arguments, option);
         }
         return value;
+    }
+
+
+    interface OptionParser {
+        Object parse(List<String> arguments, Option option);
+    }
+
+    private static Object parseString(List<String> arguments, Option option) {
+        return new StringOptionParser().parse(arguments, option);
+    }
+
+    static class StringOptionParser implements OptionParser{
+
+        @Override
+        public Object parse(List<String> arguments, Option option) {
+            int i = arguments.indexOf("-" + option.value());
+            return arguments.get(i + 1);
+        }
+    }
+
+
+    private static Object parseInt(List<String> arguments, Option option) {
+        return new IntOptionParser().parse(arguments, option);
+    }
+
+    static class IntOptionParser implements OptionParser{
+
+        @Override
+        public Object parse(List<String> arguments, Option option) {
+            int i = arguments.indexOf("-" + option.value());
+            return Integer.valueOf(arguments.get(i + 1));
+        }
+    }
+
+    private static Object parseBoolean(List<String> arguments, Option option) {
+        return new BooleanOptionParser().parse(arguments, option);
+    }
+
+    static class BooleanOptionParser implements OptionParser{
+        @Override
+        public Object parse(List<String> arguments, Option option) {
+            return arguments.contains("-" + option.value());
+        }
     }
 }
