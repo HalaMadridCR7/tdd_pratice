@@ -1,4 +1,4 @@
-package com.wqh.argstdd;
+package com.wqh.args;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package com.wqh.argstdd;
+package com.wqh.args;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
