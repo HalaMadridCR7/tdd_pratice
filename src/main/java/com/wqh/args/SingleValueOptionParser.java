@@ -7,7 +7,7 @@ import java.util.function.Function;
  * @author wqh
  * @date 2022-03-20 23:35
  */
-class SingleValueOptionParser<T> implements OptionParser {
+public class SingleValueOptionParser<T> implements OptionParser<T> {
 
     Function<String, T> PARSER;
 

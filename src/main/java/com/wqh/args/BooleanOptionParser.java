@@ -6,9 +6,14 @@ import java.util.List;
  * @author wqh
  * @date 2022-03-20 23:35
  */
-class BooleanOptionParser implements OptionParser {
+public class BooleanOptionParser implements OptionParser<Boolean> {
     @Override
-    public Object parse(List<String> arguments, Option option) {
-        return arguments.contains("-" + option.value());
+    public Boolean parse(List<String> arguments, Option option) {
+        int index = arguments.indexOf("-" + option.value());
+        if(index + 1 < arguments.size()
+                &&  !arguments.get(index + 1).contains("-")) {
+            throw new TooManyArgumentsException(option.value());
+        }
+        return index!=-1;
     }
 }
