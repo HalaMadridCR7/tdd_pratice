@@ -17,6 +17,7 @@ import java.util.Arrays;
  */
 public class BooleanOptionParserTest {
 
+    // sad path
     @Test
     public void shop_not_accept_extra_arguments_for_boolean_option() {
         TooManyArgumentsException e = assertThrows(TooManyArgumentsException.class, () -> {
@@ -25,11 +26,19 @@ public class BooleanOptionParserTest {
         assertEquals("l", e.getOption());
     }
 
+    // default value
     @Test
     public void shop_set_default_value_to_false_if_option_not_present() {
-        Boolean result = new BooleanOptionParser().parse(Arrays.asList(), option("-l"));
+        Boolean result = new BooleanOptionParser().parse(Arrays.asList(), option("l"));
         assertFalse(result);
 
+    }
+
+    // happ path
+    @Test
+    public void should_set_boolean_option_to_true_if_flag_present() {
+        Boolean result = new BooleanOptionParser().parse(Arrays.asList("-l"), option("l"));
+        assertTrue(result);
     }
 
     static Option option(String value) {
