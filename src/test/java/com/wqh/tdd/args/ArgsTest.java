@@ -13,16 +13,6 @@ import org.junit.jupiter.api.Test;
 public class ArgsTest {
 
     @Test
-    public void should_get_string_as_option_value() {
-        StringOption option = Args.parse(StringOption.class, "-d", "/usr/local");
-        assertEquals(option.directory(), "/usr/local");
-    }
-
-    public record StringOption(@Option("d") String directory) {
-
-    }
-
-    @Test
     public void should_parse_multi_options() {
 
         MultiOptions option = Args.parse(MultiOptions.class, "-l", "-p", "8080", "-d", "/usr/local");

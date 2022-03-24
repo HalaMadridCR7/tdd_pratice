@@ -7,9 +7,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wqh
@@ -39,15 +39,20 @@ public class SingleValueOptionParserTest {
 
     // default value
     @Test
-    public void should_set_default_value_to_0_for_int_option() {
-        assertEquals(0, new SingleValueOptionParser<>(Integer::valueOf, 0).parse(Arrays.asList(), option("p")));
+    public void should_set_default_value_to_for_single_value_option() {
+        Function<String, Object> whatever = it -> null;
+        Object defaultValue =  new Object();
+        assertSame(defaultValue, new SingleValueOptionParser<>(whatever, defaultValue).parse(Arrays.asList(), option("p")));
     }
 
 
     // happy path
     @Test
     public void should_parse_value_if_flag_present() {
-        assertEquals(8080, new SingleValueOptionParser<>(Integer::valueOf, 0).parse(Arrays.asList("-p", "8080"), option("p")));
+        Object parsed =  new Object();
+        Function<String, Object> parse = it -> parsed;
+        Object defaultValue = new Object();
+        assertSame(parsed, new SingleValueOptionParser<>(parse, defaultValue).parse(Arrays.asList("-p", "8080"), option("p")));
     }
 
     static Option option(String value) {
