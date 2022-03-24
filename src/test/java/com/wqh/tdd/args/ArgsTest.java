@@ -12,17 +12,6 @@ import org.junit.jupiter.api.Test;
  */
 public class ArgsTest {
 
-
-    @Test
-    public void should_parse_int_as_option_value() {
-        IntegerOption option = Args.parse(IntegerOption.class, "-p", "8080");
-        assertEquals(option.port(), 8080);
-    }
-
-    public record IntegerOption(@Option("p") Integer port) {
-
-    }
-
     @Test
     public void should_get_string_as_option_value() {
         StringOption option = Args.parse(StringOption.class, "-d", "/usr/local");

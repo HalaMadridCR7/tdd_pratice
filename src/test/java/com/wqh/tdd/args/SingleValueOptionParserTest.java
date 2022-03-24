@@ -1,9 +1,6 @@
 package com.wqh.tdd.args;
 
-import com.wqh.args.InsufficientException;
-import com.wqh.args.Option;
-import com.wqh.args.SingleValueOptionParser;
-import com.wqh.args.TooManyArgumentsException;
+import com.wqh.args.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -20,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 public class SingleValueOptionParserTest {
 
+    // sad path
     @Test
     public void should_not_accept_extra_arguments_for_single_value_option() {
         TooManyArgumentsException e = assertThrows(TooManyArgumentsException.class, () -> {
@@ -28,6 +26,7 @@ public class SingleValueOptionParserTest {
         assertEquals("p", e.getOption());
     }
 
+    // sad path
     @ParameterizedTest
     @ValueSource(strings = {"-p -l", "-p"})
     public void should_not_accept_insufficient_arguments_for_single_value_option(String arguments) {
@@ -38,11 +37,18 @@ public class SingleValueOptionParserTest {
         assertEquals("p", e.getOption());
     }
 
+    // default value
     @Test
     public void should_set_default_value_to_0_for_int_option() {
         assertEquals(0, new SingleValueOptionParser<>(Integer::valueOf, 0).parse(Arrays.asList(), option("p")));
     }
 
+
+    // happy path
+    @Test
+    public void should_parse_value_if_flag_present() {
+        assertEquals(8080, new SingleValueOptionParser<>(Integer::valueOf, 0).parse(Arrays.asList("-p", "8080"), option("p")));
+    }
 
     static Option option(String value) {
         return new Option() {
