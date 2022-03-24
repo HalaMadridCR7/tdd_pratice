@@ -11,18 +11,36 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
 
     Function<String, T> PARSER;
 
-    public SingleValueOptionParser(Function<String, T> PARSER) {
+    T defaultValue;
+
+    public SingleValueOptionParser(Function<String, T> PARSER, T defaultValue) {
         this.PARSER = PARSER;
+        this.defaultValue = defaultValue;
     }
 
+
     @Override
-    public Object parse(List<String> arguments, Option option) {
+    public T parse(List<String> arguments, Option option) {
         int i = arguments.indexOf("-" + option.value());
+
+        if(i == -1) {
+            return defaultValue;
+        }
+
+        if(i + 1 == arguments.size() || arguments.get(i + 1).startsWith("-")) {
+            throw new InsufficientException(option.value());
+        }
+
+        if(i + 2 < arguments.size()
+                &&  !arguments.get(i + 2).startsWith("-")) {
+            throw new TooManyArgumentsException(option.value());
+        }
+
         String value = arguments.get(i + 1);
         return parseValue(value);
     }
 
-    protected Object parseValue(String value) {
+    protected T parseValue(String value) {
         return PARSER.apply(value);
     }
 }
