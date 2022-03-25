@@ -36,13 +36,12 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
         if(values.size() > 1) {
             throw new TooManyArgumentsException(option.value());
         }
-        String value = arguments.get(i + 1);
+        String value = values.get(0);
         return parseValue(value);
     }
 
     private List<String> values(List<String> arguments, int i) {
-        int followingFlag = IntStream.range(i + 1, arguments.size()).filter(rangeId -> arguments.get(rangeId).startsWith("-")).findFirst().orElse(arguments.size());
-        return arguments.subList(i + 1, followingFlag);
+        return arguments.subList(i + 1, IntStream.range(i + 1, arguments.size()).filter(rangeId -> arguments.get(rangeId).startsWith("-")).findFirst().orElse(arguments.size()));
     }
 
     protected T parseValue(String value) {

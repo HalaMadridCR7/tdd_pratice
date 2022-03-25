@@ -1,14 +1,16 @@
 package com.wqh.tdd.args;
 
-import com.wqh.args.*;
+import com.wqh.args.InsufficientException;
+import com.wqh.args.SingleValueOptionParser;
+import com.wqh.args.TooManyArgumentsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import static com.wqh.tdd.args.BooleanOptionParserTest.option;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -53,20 +55,6 @@ public class SingleValueOptionParserTest {
         Function<String, Object> parse = it -> parsed;
         Object defaultValue = new Object();
         assertSame(parsed, new SingleValueOptionParser<>(parse, defaultValue).parse(Arrays.asList("-p", "8080"), option("p")));
-    }
-
-    static Option option(String value) {
-        return new Option() {
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return Option.class;
-            }
-
-            @Override
-            public String value() {
-                return value;
-            }
-        };
     }
 
 }
