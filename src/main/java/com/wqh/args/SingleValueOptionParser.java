@@ -1,5 +1,6 @@
 package com.wqh.args;
 
+import com.wqh.args.exceptions.IllegalValueException;
 import com.wqh.args.exceptions.InsufficientException;
 import com.wqh.args.exceptions.TooManyArgumentsException;
 
@@ -39,7 +40,11 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
             throw new TooManyArgumentsException(option.value());
         }
         String value = values.get(0);
-        return parseValue(value);
+        try {
+            return parseValue(value);
+        } catch (Exception e) {
+            throw new IllegalValueException(option.value(), value);
+        }
     }
 
     public static List<String> values(List<String> arguments, int i) {
