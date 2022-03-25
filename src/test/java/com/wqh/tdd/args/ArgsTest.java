@@ -3,7 +3,7 @@ package com.wqh.tdd.args;
 import  static org.junit.jupiter.api.Assertions.*;
 
 import com.wqh.args.Args;
-import com.wqh.args.IllegalOptionException;
+import com.wqh.args.exceptions.IllegalOptionException;
 import com.wqh.args.Option;
 import org.junit.jupiter.api.Test;
 

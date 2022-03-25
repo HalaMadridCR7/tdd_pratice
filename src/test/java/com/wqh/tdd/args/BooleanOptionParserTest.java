@@ -2,10 +2,9 @@ package com.wqh.tdd.args;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.wqh.args.Args;
 import com.wqh.args.BooleanOptionParser;
 import com.wqh.args.Option;
-import com.wqh.args.TooManyArgumentsException;
+import com.wqh.args.exceptions.TooManyArgumentsException;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;

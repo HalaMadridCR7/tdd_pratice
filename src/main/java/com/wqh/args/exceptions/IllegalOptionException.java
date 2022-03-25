@@ -1,4 +1,4 @@
-package com.wqh.args;
+package com.wqh.args.exceptions;
 
 /**
  * @author wqh

@@ -1,8 +1,8 @@
 package com.wqh.tdd.args;
 
-import com.wqh.args.InsufficientException;
+import com.wqh.args.exceptions.InsufficientException;
 import com.wqh.args.SingleValueOptionParser;
-import com.wqh.args.TooManyArgumentsException;
+import com.wqh.args.exceptions.TooManyArgumentsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
