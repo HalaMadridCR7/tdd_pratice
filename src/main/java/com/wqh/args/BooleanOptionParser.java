@@ -14,10 +14,10 @@ public class BooleanOptionParser implements OptionParser<Boolean> {
             return false;
         }
 
-        if(index + 1 < arguments.size()
-                &&  !arguments.get(index + 1).startsWith("-")) {
+        List<String> values = SingleValueOptionParser.values(arguments, index);
+        if(values.size() > 0) {
             throw new TooManyArgumentsException(option.value());
         }
-        return index!=-1;
+        return true;
     }
 }

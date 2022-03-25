@@ -23,13 +23,13 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
 
     @Override
     public T parse(List<String> arguments, Option option) {
-        int i = arguments.indexOf("-" + option.value());
+        int index = arguments.indexOf("-" + option.value());
 
-        if(i == -1) {
+        if(index == -1) {
             return defaultValue;
         }
 
-        List<String> values = values(arguments, i);
+        List<String> values = values(arguments, index);
         if(values.size() < 1) {
             throw new InsufficientException(option.value());
         }
@@ -40,7 +40,7 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
         return parseValue(value);
     }
 
-    private List<String> values(List<String> arguments, int i) {
+    public static List<String> values(List<String> arguments, int i) {
         return arguments.subList(i + 1, IntStream.range(i + 1, arguments.size()).filter(rangeId -> arguments.get(rangeId).startsWith("-")).findFirst().orElse(arguments.size()));
     }
 
@@ -48,12 +48,4 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
         return PARSER.apply(value);
     }
 
-    public static void main(String[] args) {
-        List<String> testList = Arrays.asList("a", "-l", "a", "b");
-        int x = 2;
-        int i = IntStream.range(x, testList.size()).filter(index -> testList.get(index).startsWith("-")).findFirst().orElse(testList.size() - x);
-        System.out.println(i);
-
-
-    }
 }
