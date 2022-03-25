@@ -24,23 +24,30 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
         this.defaultValue = defaultValue;
     }
 
+    public static OptionParser<Boolean> bool() {
+        // 这个就是通过lambda表达式的方式， 实例化了一个OptionParser
+        return (arguments, option) -> {
+            return values(arguments, option, 0).map(it -> true).orElse(false);
+        };
+    }
+
 
     @Override
     public T parse(List<String> arguments, Option option) {
         return values(arguments, option, 1).map(it -> parseValue(option, it.get(0))).orElse(defaultValue);
     }
 
-    public static Optional<List<String>> values(List<String> arguments, Option option, int excepdedSize) {
+    public static Optional<List<String>> values(List<String> arguments, Option option, int exceptedSize) {
         int index = arguments.indexOf("-" + option.value());
         if(index == -1) {
             return Optional.empty();
         }
 
         List<String> values = values(arguments, index);
-        if(values.size() < excepdedSize) {
+        if(values.size() < exceptedSize) {
             throw new InsufficientException(option.value());
         }
-        if(values.size() > excepdedSize) {
+        if(values.size() > exceptedSize) {
             throw new TooManyArgumentsException(option.value());
         }
         return Optional.of(values);
