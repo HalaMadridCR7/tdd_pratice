@@ -5,6 +5,7 @@ import com.wqh.args.exceptions.InsufficientException;
 import com.wqh.args.exceptions.TooManyArgumentsException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -26,20 +27,26 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
 
     @Override
     public T parse(List<String> arguments, Option option) {
-        int index = arguments.indexOf("-" + option.value());
+        return values(arguments, option, 1).map(it -> parseValue(option, it.get(0))).orElse(defaultValue);
+    }
 
+    public static Optional<List<String>> values(List<String> arguments, Option option, int excepdedSize) {
+        int index = arguments.indexOf("-" + option.value());
         if(index == -1) {
-            return defaultValue;
+            return Optional.empty();
         }
 
         List<String> values = values(arguments, index);
-        if(values.size() < 1) {
+        if(values.size() < excepdedSize) {
             throw new InsufficientException(option.value());
         }
-        if(values.size() > 1) {
+        if(values.size() > excepdedSize) {
             throw new TooManyArgumentsException(option.value());
         }
-        String value = values.get(0);
+        return Optional.of(values);
+    }
+
+    private T parseValue(Option option, String value) {
         try {
             return parseValue(value);
         } catch (Exception e) {

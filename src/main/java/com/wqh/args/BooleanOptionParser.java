@@ -1,8 +1,10 @@
 package com.wqh.args;
 
+import com.wqh.args.exceptions.InsufficientException;
 import com.wqh.args.exceptions.TooManyArgumentsException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author wqh
@@ -11,15 +13,6 @@ import java.util.List;
 public class BooleanOptionParser implements OptionParser<Boolean> {
     @Override
     public Boolean parse(List<String> arguments, Option option) {
-        int index = arguments.indexOf("-" + option.value());
-        if(index == -1) {
-            return false;
-        }
-
-        List<String> values = SingleValueOptionParser.values(arguments, index);
-        if(values.size() > 0) {
-            throw new TooManyArgumentsException(option.value());
-        }
-        return true;
+        return SingleValueOptionParser.values(arguments, option, 0).map(it -> true).orElse(false);
     }
 }
