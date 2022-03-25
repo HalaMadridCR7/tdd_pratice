@@ -37,9 +37,9 @@ public class Args {
     }
 
     static Map<Class<?>, OptionParser> PARSER = Map.of(
-            Boolean.class, SingleValueOptionParser.bool(),
-            Integer.class, SingleValueOptionParser.unary(Integer::valueOf, 0),
-            String.class, SingleValueOptionParser.unary(String::valueOf, "")
+            Boolean.class, OptionParsers.bool(),
+            Integer.class, OptionParsers.unary(Integer::valueOf, 0),
+            String.class, OptionParsers.unary(String::valueOf, "")
     );
 
 

@@ -13,32 +13,17 @@ import java.util.stream.IntStream;
  * @author wqh
  * @date 2022-03-20 23:35
  */
-public class SingleValueOptionParser<T> implements OptionParser<T> {
-
-    Function<String, T> PARSER;
-
-    T defaultValue;
-
-    private SingleValueOptionParser(Function<String, T> PARSER, T defaultValue) {
-        this.PARSER = PARSER;
-        this.defaultValue = defaultValue;
-    }
+public class OptionParsers {
 
     public static OptionParser<Boolean> bool() {
         // 这个就是通过lambda表达式的方式， 实例化了一个OptionParser
-        return (arguments, option) -> {
+        return (arguments, option) ->
             values(arguments, option, 0).map(it -> true).orElse(false);
-        };
+
     }
 
     public static <T> OptionParser<T> unary(Function<String, T> PARSER, T defaultValue) {
         return (arguments, option) -> values(arguments, option, 1).map(it -> parseValue(option, it.get(0), PARSER)).orElse(defaultValue);
-    }
-
-
-    @Override
-    public T parse(List<String> arguments, Option option) {
-        return values(arguments, option, 1).map(it -> parseValue(option, it.get(0), PARSER)).orElse(defaultValue);
     }
 
     public static Optional<List<String>> values(List<String> arguments, Option option, int exceptedSize) {
