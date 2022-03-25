@@ -19,7 +19,7 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
 
     T defaultValue;
 
-    public SingleValueOptionParser(Function<String, T> PARSER, T defaultValue) {
+    private SingleValueOptionParser(Function<String, T> PARSER, T defaultValue) {
         this.PARSER = PARSER;
         this.defaultValue = defaultValue;
     }
@@ -27,14 +27,18 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
     public static OptionParser<Boolean> bool() {
         // 这个就是通过lambda表达式的方式， 实例化了一个OptionParser
         return (arguments, option) -> {
-            return values(arguments, option, 0).map(it -> true).orElse(false);
+            values(arguments, option, 0).map(it -> true).orElse(false);
         };
+    }
+
+    public static <T> OptionParser<T> unary(Function<String, T> PARSER, T defaultValue) {
+        return (arguments, option) -> values(arguments, option, 1).map(it -> parseValue(option, it.get(0), PARSER)).orElse(defaultValue);
     }
 
 
     @Override
     public T parse(List<String> arguments, Option option) {
-        return values(arguments, option, 1).map(it -> parseValue(option, it.get(0))).orElse(defaultValue);
+        return values(arguments, option, 1).map(it -> parseValue(option, it.get(0), PARSER)).orElse(defaultValue);
     }
 
     public static Optional<List<String>> values(List<String> arguments, Option option, int exceptedSize) {
@@ -53,9 +57,9 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
         return Optional.of(values);
     }
 
-    private T parseValue(Option option, String value) {
+    private static <T> T parseValue(Option option, String value, Function<String, T> parser) {
         try {
-            return parseValue(value);
+            return parseValue(value, parser);
         } catch (Exception e) {
             throw new IllegalValueException(option.value(), value);
         }
@@ -65,8 +69,8 @@ public class SingleValueOptionParser<T> implements OptionParser<T> {
         return arguments.subList(i + 1, IntStream.range(i + 1, arguments.size()).filter(rangeId -> arguments.get(rangeId).startsWith("-")).findFirst().orElse(arguments.size()));
     }
 
-    protected T parseValue(String value) {
-        return PARSER.apply(value);
+    protected static <T> T parseValue(String value, Function<String, T> parser) {
+        return parser.apply(value);
     }
 
 }

@@ -23,7 +23,7 @@ public class SingleValueOptionParserTest {
     @Test
     public void should_not_accept_extra_arguments_for_single_value_option() {
         TooManyArgumentsException e = assertThrows(TooManyArgumentsException.class, () -> {
-            new SingleValueOptionParser<Integer>(Integer::valueOf, 0).parse(Arrays.asList("-p", "8080", "8081"), option("p"));
+            SingleValueOptionParser.unary(Integer::valueOf, 0).parse(Arrays.asList("-p", "8080", "8081"), option("p"));
         });
         assertEquals("p", e.getOption());
     }
@@ -33,7 +33,7 @@ public class SingleValueOptionParserTest {
     @ValueSource(strings = {"-p -l", "-p"})
     public void should_not_accept_insufficient_arguments_for_single_value_option(String arguments) {
         InsufficientException e = assertThrows(InsufficientException.class, () -> {
-            new SingleValueOptionParser<Integer>(Integer::valueOf, 0).parse(Arrays.asList(arguments.split(" ")), option("p"));
+            SingleValueOptionParser.unary(Integer::valueOf, 0).parse(Arrays.asList(arguments.split(" ")), option("p"));
         });
 
         assertEquals("p", e.getOption());
@@ -44,7 +44,7 @@ public class SingleValueOptionParserTest {
     public void should_set_default_value_to_for_single_value_option() {
         Function<String, Object> whatever = it -> null;
         Object defaultValue =  new Object();
-        assertSame(defaultValue, new SingleValueOptionParser<>(whatever, defaultValue).parse(Arrays.asList(), option("p")));
+        assertSame(defaultValue, SingleValueOptionParser.unary(whatever, defaultValue).parse(Arrays.asList(), option("p")));
     }
 
 
@@ -54,7 +54,7 @@ public class SingleValueOptionParserTest {
         Object parsed =  new Object();
         Function<String, Object> parse = it -> parsed;
         Object defaultValue = new Object();
-        assertSame(parsed, new SingleValueOptionParser<>(parse, defaultValue).parse(Arrays.asList("-p", "8080"), option("p")));
+        assertSame(parsed, SingleValueOptionParser.unary(parse, defaultValue).parse(Arrays.asList("-p", "8080"), option("p")));
     }
 
 }
