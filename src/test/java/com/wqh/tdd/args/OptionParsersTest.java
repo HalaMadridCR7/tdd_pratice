@@ -91,6 +91,19 @@ public class OptionParsersTest {
             Object defaultValue = new Object();
             assertSame(parsed, OptionParsers.unary(parse, defaultValue).parse(Arrays.asList("-p", "8080"), option("p")));
         }
+
+        // TODO illegal value format
+        @Test
+        public void should_raise_exception_illegal_value_format() {
+            Function<String, Object> parse = it -> {
+                throw new RuntimeException();
+            };
+            Object defaultValue = new Object();
+            IllegalValueException e = assertThrows(IllegalValueException.class,
+                    () -> OptionParsers.unary(parse, defaultValue).parse(Arrays.asList("-p", "8080"), option("p")));
+            assertEquals("p", e.getParameter());
+            assertEquals("8080", e.getValue());
+        }
     }
 
 
