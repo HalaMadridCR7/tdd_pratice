@@ -7,6 +7,7 @@ import com.wqh.args.exceptions.TooManyArgumentsException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 
 /**
@@ -22,8 +23,18 @@ public class OptionParsers {
 
     }
 
-    public static <T> OptionParser<T> unary(Function<String, T> PARSER, T defaultValue) {
-        return (arguments, option) -> values(arguments, option, 1).map(it -> parseValue(option, it.get(0), PARSER)).orElse(defaultValue);
+    public static <T> OptionParser<T> unary(Function<String, T> valueParser, T defaultValue) {
+        return (arguments, option) -> values(arguments, option, 1).map(it -> parseValue(option, it.get(0), valueParser)).orElse(defaultValue);
+    }
+
+    public static <T> OptionParser<T[]> list(IntFunction<T[]> generator, Function<String, T> valueParser) {
+        return (arguments, option) ->
+                values(arguments, option).map(it -> it.stream().map(value -> parseValue(option, value, valueParser)).toArray(generator)).orElse(generator.apply(0));
+    }
+
+    private static Optional<List<String>> values(List<String> arguments, Option option) {
+        int index = arguments.indexOf("-" + option.value());
+        return Optional.ofNullable(index == -1 ? null : values(arguments, index));
     }
 
     private static Optional<List<String>> values(List<String> arguments, Option option, int exceptedSize) {

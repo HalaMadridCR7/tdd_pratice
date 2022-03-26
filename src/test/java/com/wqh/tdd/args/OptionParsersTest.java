@@ -1,6 +1,7 @@
 package com.wqh.tdd.args;
 
 import com.wqh.args.Option;
+import com.wqh.args.OptionParser;
 import com.wqh.args.exceptions.InsufficientException;
 import com.wqh.args.OptionParsers;
 import com.wqh.args.exceptions.TooManyArgumentsException;
@@ -13,7 +14,6 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static com.wqh.tdd.args.OptionParsersTest.BooleanOptionParserTest.option;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -21,6 +21,35 @@ import static org.junit.jupiter.api.Assertions.*;
  * @date 2022-03-23 07:09
  */
 public class OptionParsersTest {
+
+    @Nested
+    class BooleanOptionParserTest {
+
+        // sad path
+        @Test
+        public void shop_not_accept_extra_arguments_for_boolean_option() {
+            TooManyArgumentsException e = assertThrows(TooManyArgumentsException.class, () -> {
+                OptionParsers.bool().parse(Arrays.asList("-l", "t"), option("l"));
+            });
+            assertEquals("l", e.getOption());
+        }
+
+        // default value
+        @Test
+        public void shop_set_default_value_to_false_if_option_not_present() {
+            Boolean result = OptionParsers.bool().parse(Arrays.asList(), option("l"));
+            assertFalse(result);
+
+        }
+
+        // happ path
+        @Test
+        public void should_set_boolean_option_to_true_if_flag_present() {
+            Boolean result = OptionParsers.bool().parse(Arrays.asList("-l"), option("l"));
+            assertTrue(result);
+        }
+    }
+
 
     @Nested
     class UnaryOptionParser {
@@ -65,44 +94,29 @@ public class OptionParsersTest {
 
 
     @Nested
-    class BooleanOptionParserTest {
-
-        // sad path
+    class ListOptionParserTest {
+        //TODO: -g "this" "is" => {"this", is"}
         @Test
-        public void shop_not_accept_extra_arguments_for_boolean_option() {
-            TooManyArgumentsException e = assertThrows(TooManyArgumentsException.class, () -> {
-                OptionParsers.bool().parse(Arrays.asList("-l", "t"), option("l"));
-            });
-            assertEquals("l", e.getOption());
+        public void shop_parse_list_value() {
+            String[] result = OptionParsers.list(String[]::new, String::valueOf).parse(Arrays.asList("-g", "this", "is"), option("g"));
+            assertArrayEquals(result, new String[]{"this", "is"});
         }
 
-        // default value
-        @Test
-        public void shop_set_default_value_to_false_if_option_not_present() {
-            Boolean result = OptionParsers.bool().parse(Arrays.asList(), option("l"));
-            assertFalse(result);
+        //TODO: default value => []
+        //TODO: -d a => throw exception
+    }
 
-        }
+    static Option option(String value) {
+        return new Option() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Option.class;
+            }
 
-        // happ path
-        @Test
-        public void should_set_boolean_option_to_true_if_flag_present() {
-            Boolean result = OptionParsers.bool().parse(Arrays.asList("-l"), option("l"));
-            assertTrue(result);
-        }
-
-        static Option option(String value) {
-            return new Option() {
-                @Override
-                public Class<? extends Annotation> annotationType() {
-                    return Option.class;
-                }
-
-                @Override
-                public String value() {
-                    return value;
-                }
-            };
-        }
+            @Override
+            public String value() {
+                return value;
+            }
+        };
     }
 }
