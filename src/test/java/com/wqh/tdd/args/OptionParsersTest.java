@@ -2,6 +2,7 @@ package com.wqh.tdd.args;
 
 import com.wqh.args.Option;
 import com.wqh.args.OptionParser;
+import com.wqh.args.exceptions.IllegalValueException;
 import com.wqh.args.exceptions.InsufficientException;
 import com.wqh.args.OptionParsers;
 import com.wqh.args.exceptions.TooManyArgumentsException;
@@ -97,13 +98,23 @@ public class OptionParsersTest {
     class ListOptionParserTest {
         //TODO: -g "this" "is" => {"this", is"}
         @Test
-        public void shop_parse_list_value() {
-            String[] result = OptionParsers.list(String[]::new, String::valueOf).parse(Arrays.asList("-g", "this", "is"), option("g"));
-            assertArrayEquals(result, new String[]{"this", "is"});
+        public void should_parse_list_value() {
+            assertArrayEquals(new String[]{"this", "is"}, OptionParsers.list(String[]::new, String::valueOf).parse(Arrays.asList("-g", "this", "is"), option("g")));
         }
 
         //TODO: default value => []
+        @Test
+        public void should_use_empty_array_if_no_parameter() {
+            assertArrayEquals(new String[]{}, OptionParsers.list(String[]::new, String::valueOf).parse(Arrays.asList(), option("g")));
+        }
+
         //TODO: -d a => throw exception
+        @Test
+        public void should_throw_exception_if_value_parser_cant_parse_value() {
+            IllegalValueException e = assertThrows(IllegalValueException.class, () -> OptionParsers.list(Integer[]::new, Integer::parseInt).parse(Arrays.asList("-d", "a"), option("d")));
+            assertEquals("d", e.getParameter());
+            assertEquals("a", e.getValue());
+        }
     }
 
     static Option option(String value) {
