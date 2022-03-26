@@ -26,7 +26,7 @@ public class OptionParsers {
         return (arguments, option) -> values(arguments, option, 1).map(it -> parseValue(option, it.get(0), PARSER)).orElse(defaultValue);
     }
 
-    public static Optional<List<String>> values(List<String> arguments, Option option, int exceptedSize) {
+    private static Optional<List<String>> values(List<String> arguments, Option option, int exceptedSize) {
         int index = arguments.indexOf("-" + option.value());
         if(index == -1) {
             return Optional.empty();
@@ -50,11 +50,11 @@ public class OptionParsers {
         }
     }
 
-    public static List<String> values(List<String> arguments, int i) {
+    private static List<String> values(List<String> arguments, int i) {
         return arguments.subList(i + 1, IntStream.range(i + 1, arguments.size()).filter(rangeId -> arguments.get(rangeId).startsWith("-")).findFirst().orElse(arguments.size()));
     }
 
-    protected static <T> T parseValue(String value, Function<String, T> parser) {
+    private static <T> T parseValue(String value, Function<String, T> parser) {
         return parser.apply(value);
     }
 
