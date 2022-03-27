@@ -131,6 +131,11 @@ public class OptionParsersTest {
             assertEquals("d", e.getParameter());
             assertEquals("a", e.getValue());
         }
+
+        @Test
+        public void should_not_treat_negative_int_as_flag() {
+            assertArrayEquals(new Integer[]{-1, -2}, OptionParsers.list(Integer[]::new, Integer::valueOf).parse(Arrays.asList("-d",  "-1", "-2"), option("d")));
+        }
     }
 
     static Option option(String value) {

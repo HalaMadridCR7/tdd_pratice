@@ -62,7 +62,8 @@ public class OptionParsers {
     }
 
     private static List<String> values(List<String> arguments, int i) {
-        return arguments.subList(i + 1, IntStream.range(i + 1, arguments.size()).filter(rangeId -> arguments.get(rangeId).startsWith("-")).findFirst().orElse(arguments.size()));
+        return arguments.subList(i + 1, IntStream.range(i + 1, arguments.size())
+                .filter(rangeId -> arguments.get(rangeId).matches("^-[a-zA-Z]+$")).findFirst().orElse(arguments.size()));
     }
 
     private static <T> T parseValue(String value, Function<String, T> parser) {
