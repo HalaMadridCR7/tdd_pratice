@@ -1,6 +1,7 @@
-package com.wqh.args;
+package com.wqh.tdd.args;
 
-import com.wqh.args.exceptions.IllegalOptionException;
+import com.wqh.tdd.args.exceptions.IllegalOptionException;
+import com.wqh.tdd.args.exceptions.UnSupportedOptionTypeException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
@@ -20,7 +21,7 @@ public class Args {
             Constructor<?> constructor = optionsClass.getDeclaredConstructors()[0];
 
             Object[] values = Arrays.stream(constructor.getParameters())
-                    .map(parameter -> parseOption(parameter, arguments)).toArray();
+                    .map(parameter -> parserOption(parameter, arguments, PARSER)).toArray();
             return (T)constructor.newInstance(values);
         } catch (IllegalOptionException e) {
             throw e;
@@ -29,11 +30,15 @@ public class Args {
         }
     }
 
-    private static Object parseOption(Parameter parameter, List<String> arguments) {
+    private static Object parserOption(Parameter parameter, List<String> arguments, Map<Class<?>, OptionParser> parsers) {
         if(!parameter.isAnnotationPresent(Option.class)) {
             throw new IllegalOptionException(parameter.getName());
         }
-        return PARSER.get(parameter.getType()).parse(arguments, parameter.getAnnotation(Option.class));
+        Option option = parameter.getAnnotation(Option.class);
+        if(parsers.containsKey(parameter.getType())) {
+            throw new UnSupportedOptionTypeException(option.value(), parameter.getType());
+        }
+        return parsers.get(parameter.getType()).parse(arguments, option);
     }
 
     static Map<Class<?>, OptionParser> PARSER = Map.of(

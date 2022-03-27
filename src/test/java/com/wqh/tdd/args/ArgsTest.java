@@ -2,12 +2,8 @@ package com.wqh.tdd.args;
 
 import  static org.junit.jupiter.api.Assertions.*;
 
-import com.wqh.args.Args;
-import com.wqh.args.exceptions.IllegalOptionException;
-import com.wqh.args.Option;
+import com.wqh.tdd.args.exceptions.IllegalOptionException;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 /**
  * @author wqh
@@ -17,15 +13,19 @@ public class ArgsTest {
 
     @Test
     public void should_parse_multi_options() {
+        // sut （system under test ：被测系统） => Args.parse
 
+        // exercise
         MultiOptions option = Args.parse(MultiOptions.class, "-l", "-p", "8080", "-d", "/usr/local");
-
+        // verify
         assertTrue(option.logging());
         assertEquals(option.port(), 8080);
         assertEquals(option.directory(), "/usr/local");
+        // teardown
 
     }
 
+    // setup
     public record MultiOptions(@Option("l") Boolean logging, @Option("p") Integer port, @Option("d") String directory) {
 
     }

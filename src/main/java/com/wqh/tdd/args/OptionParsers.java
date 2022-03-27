@@ -1,8 +1,8 @@
-package com.wqh.args;
+package com.wqh.tdd.args;
 
-import com.wqh.args.exceptions.IllegalValueException;
-import com.wqh.args.exceptions.InsufficientException;
-import com.wqh.args.exceptions.TooManyArgumentsException;
+import com.wqh.tdd.args.exceptions.IllegalValueException;
+import com.wqh.tdd.args.exceptions.InsufficientException;
+import com.wqh.tdd.args.exceptions.TooManyArgumentsException;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,19 +38,17 @@ public class OptionParsers {
     }
 
     private static Optional<List<String>> values(List<String> arguments, Option option, int exceptedSize) {
-        int index = arguments.indexOf("-" + option.value());
-        if(index == -1) {
-            return Optional.empty();
-        }
+        return values(arguments, option).map(it -> checkSize(option, exceptedSize, it));
+    }
 
-        List<String> values = values(arguments, index);
+    private static List<String> checkSize(Option option, int exceptedSize, List<String> values) {
         if(values.size() < exceptedSize) {
             throw new InsufficientException(option.value());
         }
         if(values.size() > exceptedSize) {
             throw new TooManyArgumentsException(option.value());
         }
-        return Optional.of(values);
+        return values;
     }
 
     private static <T> T parseValue(Option option, String value, Function<String, T> parser) {

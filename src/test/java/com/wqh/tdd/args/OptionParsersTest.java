@@ -1,11 +1,8 @@
 package com.wqh.tdd.args;
 
-import com.wqh.args.Option;
-import com.wqh.args.OptionParser;
-import com.wqh.args.exceptions.IllegalValueException;
-import com.wqh.args.exceptions.InsufficientException;
-import com.wqh.args.OptionParsers;
-import com.wqh.args.exceptions.TooManyArgumentsException;
+import com.wqh.tdd.args.exceptions.IllegalValueException;
+import com.wqh.tdd.args.exceptions.InsufficientException;
+import com.wqh.tdd.args.exceptions.TooManyArgumentsException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,8 +35,13 @@ public class OptionParsersTest {
         // default value
         @Test
         public void shop_set_default_value_to_false_if_option_not_present() {
-            Boolean result = OptionParsers.bool().parse(Arrays.asList(), option("l"));
+            // setup
+            OptionParser<Boolean> bool = OptionParsers.bool();
+            // exercise
+            Boolean result = bool.parse(Arrays.asList(), option("l"));
+            // verify
             assertFalse(result);
+            // teardown
 
         }
 
