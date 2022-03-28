@@ -1,9 +1,13 @@
 package com.wqh.tdd.args;
 
 import  static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.wqh.tdd.args.exceptions.IllegalOptionException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.Map;
 
 /**
  * @author wqh
@@ -52,6 +56,25 @@ public class ArgsTest {
     }
 
     public record ListOptions(@Option("g") String[] group, @Option("d") Integer[] decimal) {
+
+    }
+
+    @Test
+    public void should_parse_multi_options_if_parser_provided() {
+        OptionParser boolParser = mock(OptionParser.class);
+        OptionParser intParser = mock(OptionParser.class);
+        OptionParser stringParser = mock(OptionParser.class);
+
+        when(boolParser.parse(Mockito.any(), Mockito.any())).thenReturn(true);
+        when(intParser.parse(Mockito.any(), Mockito.any())).thenReturn(0);
+        when(stringParser.parse(Mockito.any(), Mockito.any())).thenReturn("parsed");
+
+        Args<MultiOptions> args = new Args<>(MultiOptions.class, Map.of(Boolean.class, boolParser, Integer.class, intParser, String.class, stringParser));
+        MultiOptions option = args.parse("-l", "-p", "8080", "-d", "/usr/local");
+
+        assertTrue(option.logging());
+        assertEquals(option.port(), 0);
+        assertEquals(option.directory(), "parsed");
 
     }
 }
